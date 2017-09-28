@@ -38,7 +38,10 @@ check(#mqtt_client{username = Username}, Password, _Env) when ?UNDEFINED(Usernam
 check(Client, Password, {#http_request{method = Method, url = Url, params = Params}, SuperReq}) ->
     Params1 = feedvar(feedvar(Params, Client), "%P", Password),
     case request(Method, Url, Params1) of
-        {ok, 200, _Body}  -> {ok, is_superuser(SuperReq, Client)};
+        {ok, 200, _Body}  ->
+            %%            add by philiam
+            topic_extend:add_client_group(Client, _Body),
+            {ok, is_superuser(SuperReq, Client)};
         {ok, Code, _Body} -> {error, Code};
         {error, Error}    -> lager:error("HTTP ~s Error: ~p", [Url, Error]),
                              {error, Error}

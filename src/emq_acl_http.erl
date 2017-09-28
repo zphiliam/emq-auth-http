@@ -36,6 +36,8 @@ check_acl({Client, PubSub, Topic}, #state{acl_req = #http_request{method = Metho
     Params1 = feedvar(feedvar(feedvar(Params, Client), "%A", access(PubSub)), "%t", Topic),
     case request(Method, Url, Params1) of
         {ok, 200, _Body}   -> allow;
+        %%       add by philiam
+        {ok, 202, Body} -> topic_extend:match_this(Client, Topic, PubSub, Body);
         {ok, _Code, _Body} -> deny;
         {error, Error}     -> lager:error("Http check_acl url ~s Error: ~p", [Url, Error]), deny
     end.

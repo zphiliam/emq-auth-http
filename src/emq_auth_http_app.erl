@@ -33,6 +33,9 @@
 %%--------------------------------------------------------------------
 
 start(_StartType, _StartArgs) ->
+    %%    add by philiam
+    topic_extend:start_init(),
+
     with_env(auth_req, fun reg_authmod/1),
     with_env(acl_req,  fun reg_aclmod/1),
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
@@ -73,4 +76,3 @@ r(Config) ->
     Url    = proplists:get_value(url, Config),
     Params = proplists:get_value(params, Config),
     #http_request{method = Method, url = Url, params = Params}.
-
